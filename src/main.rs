@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 use lopdf::Document;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
@@ -176,9 +176,9 @@ fn main() -> Result<()> {
         // Create mode
         let paths = cli.paths.unwrap_or_default();
         if paths.is_empty() {
-            anyhow::bail!(
-                "You must provide either a command (like 'insert', 'remove', 'swap') or a list of images/folders to create a new PDF."
-            );
+            let mut cmd = Cli::command();
+            cmd.print_help().unwrap();
+            std::process::exit(1);
         }
         let expanded_paths = expand_paths(&paths)?;
 
